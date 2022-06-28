@@ -163,6 +163,10 @@ def loadConfigurations():
 
     loadDicts()
 
+@app.route('/',methods=['GET'])
+def home():
+    return 'Ola esta a fucnionar'
+
 @app.route('/predict',methods=['POST'])
 def predict():
     output_texts = []
