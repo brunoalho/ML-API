@@ -7,7 +7,7 @@ from tensorflow import keras
 from keras.models import load_model
 
 ## Global Variables 
-latent_dim = 100
+latent_dim = 150
 maxlen=10
 encoder_model = nan
 decoder_model = nan
@@ -24,7 +24,6 @@ app = Flask(__name__)
 api = Api(app)
 
 ##Functions
-
 def separeteByTags(inputTexts):
         input_texts_with_tags =[]
         for i in range(len(inputTexts)):
@@ -67,7 +66,7 @@ def decode_sequence(input_seq):
     stop_condition = False
     decoded_sentence = ""
     while not stop_condition:
-        output_tokens, h, c = decoder_model.predict([target_seq] + states_value)
+        output_tokens, h, c = decoder_model.predict([target_seq] + states_value, 2)
 
         # Sample a token
         sampled_token_index = np.argmax(output_tokens[0, -1, :])
@@ -91,7 +90,7 @@ def decode_sequence(input_seq):
         states_value = [h, c]
     return decoded_sentence, repeat
 
-    ### Loads #####
+### Loads #####
 def loadModel():
     model = load_model('s2s')
     loadEncoder(model)
@@ -167,9 +166,9 @@ def loadConfigurations():
 def home():
     return 'Ola esta a fucnionar'
 
-@app.route('/predict',methods=['POST'])
+@app.route('/predict/',methods=['POST'])
 def predict():
-    output_texts = []
+    output_texts =[]
     inputTexts=request.form['data']
     inputTexts=json.loads(inputTexts)
     encoder_input_data = preprocess(inputTexts)
